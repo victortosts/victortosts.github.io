@@ -296,6 +296,6 @@ export const sections = [
   { id: 'about', label: 'about' },
   { id: 'stack', label: 'stack' },
   { id: 'work', label: 'work' },
-  { id: 'open-source', label: 'open source' },
   { id: 'education', label: 'education' },
+  { id: 'open-source', label: 'open source' },
 ] as const
