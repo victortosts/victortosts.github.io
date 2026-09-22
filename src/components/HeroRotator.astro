@@ -1,0 +1,166 @@
+---
+import { profile, heroCommands } from '../data/site'
+
+interface Props {
+  /** Appended as a live `ls ~/blog | wc -l` line. */
+  postCount?: number
+}
+
+const { postCount = 0 } = Astro.props
+
+const commands = [
+  ...heroCommands,
+  {
+    cmd: 'ls ~/blog | wc -l',
+    out:
+      postCount === 0
+        ? 'no posts yet — first one is on the way'
+        : `${postCount} post${postCount === 1 ? '' : 's'} — more on the way`,
+  },
+]
+
+const first = commands[0]!
+---
+
+{/* Decorative: every fact here is also in the sections below, and a constantly
+    rewriting region is hostile to a screen reader. The sr-only line carries it. */}
+<p class="sr-only">{first.out}</p>
+
+<div class="rotator" data-rotator aria-hidden="true">
+  <div class="prompt">
+    <span class="ps1">{profile.handle}@{profile.host}:~$</span>
+    <span class="type">
+      {/* Widest command reserves the box, so the line never reflows mid-cycle. */}
+      <span class="type-ghost">{first.cmd}</span>
+      <span class="type-live" />
+    </span>
+    <span class="cursor" />
+  </div>
+
+  <p class="rot-out dim" data-rot-out>{first.out}</p>
+</div>
+
+<script is:inline define:vars={{ commands }}>
+  ;(() => {
+    const root = document.documentElement
+    if (!root.classList.contains('anim')) return
+
+    const box = document.querySelector('[data-rotator]')
+    const seq = box?.closest('[data-seq]')
+    const live = box?.querySelector('.type-live')
+    const prompt = box?.querySelector('.prompt')
+    const out = box?.querySelector('[data-rot-out]')
+    if (!box || !seq || !live || !prompt || !out) return
+
+    const TYPE_MS = 26
+    const ERASE_MS = 12
+    const BEFORE_OUT_MS = 220
+    const HOLD_MS = 2800
+    const AFTER_ERASE_MS = 300
+
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+    // Reserve the height of the tallest answer at the current width, so a longer
+    // line wrapping mid-rotation never pushes the page around. Guessing this with
+    // a breakpoint gets it wrong just above the wrap threshold, so measure it.
+    const measure = () => {
+      const current = out.textContent
+      out.style.minHeight = '0px'
+      let tallest = 0
+      for (const entry of commands) {
+        out.textContent = entry.out
+        tallest = Math.max(tallest, out.getBoundingClientRect().height)
+      }
+      out.textContent = current
+      out.style.minHeight = `${Math.ceil(tallest)}px`
+    }
+
+    measure()
+
+    let resizeTimer
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(measure, 150)
+    })
+
+    // Hold the loop while the tab is hidden or the hero is scrolled away.
+    let onScreen = true
+    new IntersectionObserver((entries) => {
+      for (const entry of entries) onScreen = entry.isIntersecting
+    }).observe(box)
+
+    const idle = async () => {
+      while (document.hidden || !onScreen) await wait(400)
+    }
+
+    const type = async (text) => {
+      prompt.classList.add('typing')
+      for (let i = 1; i <= text.length; i++) {
+        live.textContent = text.slice(0, i)
+        await wait(TYPE_MS)
+      }
+    }
+
+    const erase = async () => {
+      const text = live.textContent ?? ''
+      for (let i = text.length; i >= 0; i--) {
+        live.textContent = text.slice(0, i)
+        await wait(ERASE_MS)
+      }
+    }
+
+    const run = async () => {
+      let i = 0
+
+      // Type the opening command, then print the answer that is already in the DOM.
+      await type(commands[0].cmd)
+      await wait(BEFORE_OUT_MS)
+      out.classList.add('in')
+
+      for (;;) {
+        await wait(HOLD_MS)
+        await idle()
+
+        out.classList.remove('in')
+        await wait(BEFORE_OUT_MS)
+        await erase()
+        await wait(AFTER_ERASE_MS)
+
+        i = (i + 1) % commands.length
+        const next = commands[i]
+
+        await type(next.cmd)
+        await wait(BEFORE_OUT_MS)
+        out.textContent = next.out
+        out.classList.add('in')
+      }
+    }
+
+    // The hero's ssh sequence types this command as its last step; pick up from there.
+    seq.addEventListener('seq:done', run, { once: true })
+  })()
+</script>
+
+<style>
+  .rot-out {
+    padding-left: 1.5rem;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+    /* Floor for the static render; the script measures the real reserve. */
+    min-height: 1.5em;
+  }
+
+  .anim .rot-out {
+    opacity: 0;
+  }
+
+  .anim .rot-out.in {
+    animation: rise 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @media (max-width: 30rem) {
+    .rot-out {
+      padding-left: 0;
+    }
+  }
+</style>

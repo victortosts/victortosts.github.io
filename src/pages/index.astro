@@ -10,11 +10,12 @@ import PostList from '../components/PostList.astro'
 import { about, profile } from '../data/site'
 import { getPosts } from '../data/posts'
 
-const posts = (await getPosts()).slice(0, 3)
+const allPosts = await getPosts()
+const posts = allPosts.slice(0, 3)
 ---
 
 <Base title={`${profile.name} — ${profile.role}`} variant="home">
-  <Hero />
+  <Hero postCount={allPosts.length} />
 
   <Section id="about" label="about" cmd="cat" args="about.md">
     <div class="about-text">

@@ -1,6 +1,13 @@
 ---
 import { profile, links } from '../data/site'
 import Prompt from './Prompt.astro'
+import HeroRotator from './HeroRotator.astro'
+
+interface Props {
+  postCount?: number
+}
+
+const { postCount = 0 } = Astro.props
 ---
 
 <section id="home" class="hero" data-seq data-seq-now>
@@ -25,8 +32,7 @@ import Prompt from './Prompt.astro'
     </p>
   </div>
 
-  <Prompt cmd="whoami" args="--verbose" typed keepCursor />
-  <p id="typed-out" class="dim" data-reveal>{profile.tagline}</p>
+  <HeroRotator postCount={postCount} />
 </section>
 
 <style>
@@ -75,17 +81,6 @@ import Prompt from './Prompt.astro'
     color: var(--teal);
   }
 
-  #typed-out {
-    padding-left: 1.5rem;
-    font-size: 0.8rem;
-    margin-top: 0.2rem;
-  }
-
-  @media (max-width: 30rem) {
-    #typed-out {
-      padding-left: 0;
-    }
-  }
 </style>
 
 <script is:inline>

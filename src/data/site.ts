@@ -38,6 +38,41 @@ export type CareerEntry = {
   head?: boolean
 }
 
+/**
+ * The hero cycles through these: each command types itself out, prints a one-line
+ * answer, holds, then erases. Keep answers to a single line at desktop width.
+ */
+export const heroCommands = [
+  {
+    cmd: 'whoami --verbose',
+    out: 'Senior backend engineer \u2014 Node.js and TypeScript, ~10 years in production.',
+  },
+  {
+    cmd: 'cat ~/stack | head -6',
+    out: 'TypeScript \u00b7 Node.js \u00b7 Fastify \u00b7 React \u00b7 PostgreSQL \u00b7 AWS',
+  },
+  {
+    cmd: 'ls ~/work',
+    out: 'xprt/  plank/  hotmart/  robos.im/  teknisa/',
+  },
+  {
+    cmd: 'git log --oneline -1',
+    out: 'a1b2c3d feat: joined Xprt \u2014 building Payzen',
+  },
+  {
+    cmd: 'uptime',
+    out: 'up 10 years \u00b7 5 companies \u00b7 millions of messages/day',
+  },
+  {
+    cmd: 'cat ~/edu.md',
+    out: "UFMG \u2014 Engineer's degree, Systems Engineering (2015\u20132021)",
+  },
+  {
+    cmd: 'locale -a',
+    out: 'pt-BR native \u00b7 en advanced \u00b7 es intermediate',
+  },
+] as const
+
 export const careerLog: CareerEntry[] = [
   { hash: 'a1b2c3d', date: '2024-01', kind: 'feat', message: 'joined Xprt — building Payzen', head: true },
   { hash: '9f8e7d6', date: '2023-02', kind: 'feat', message: 'joined Plank — building Jolly' },

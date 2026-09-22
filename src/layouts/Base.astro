@@ -176,6 +176,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href
               delay += STAGGER_MS
             }
           }
+
+          seq.dispatchEvent(new CustomEvent('seq:done'))
         }
 
         const io = new IntersectionObserver(
