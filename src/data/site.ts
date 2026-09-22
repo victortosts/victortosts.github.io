@@ -192,7 +192,7 @@ export const expertise: Expertise[] = [
     meta: '6 yrs',
     detail:
       'Splitting work across services and queues without losing track of it \u2014 fan-out, idempotent consumers, retries with backoff, and dead letters someone actually reads.',
-    tools: ['SNS', 'SQS', 'Lambda', 'event-driven', 'pub/sub', 'queues & DLQs', 'WebSockets'],
+    tools: ['Kafka', 'RabbitMQ', 'SNS', 'SQS', 'Lambda', 'event-driven', 'queues & DLQs', 'WebSockets'],
   },
   {
     area: 'data modelling',
