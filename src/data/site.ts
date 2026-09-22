@@ -184,7 +184,7 @@ export const expertise: Expertise[] = [
     meta: '10 yrs',
     detail:
       'Services designed around their contracts: validation at the edge, errors that say what went wrong, and APIs that keep their shape as the product moves underneath them.',
-    tools: ['TypeScript', 'Node.js', 'Fastify', 'REST', 'JSON Schema'],
+    tools: ['TypeScript', 'Node.js', 'Fastify', 'Express', 'REST APIs', 'type-safe contracts'],
   },
   {
     area: 'distributed systems',
@@ -192,7 +192,7 @@ export const expertise: Expertise[] = [
     meta: '6 yrs',
     detail:
       'Splitting work across services and queues without losing track of it \u2014 fan-out, idempotent consumers, retries with backoff, and dead letters someone actually reads.',
-    tools: ['SNS', 'SQS', 'Lambda', 'event-driven', 'WebSockets'],
+    tools: ['SNS', 'SQS', 'Lambda', 'event-driven', 'pub/sub', 'queues & DLQs', 'WebSockets'],
   },
   {
     area: 'data modelling',
@@ -200,7 +200,7 @@ export const expertise: Expertise[] = [
     meta: '10 yrs',
     detail:
       'Letting the access patterns pick the model: normalised where writes need consistency, denormalised where reads dominate, keys and indexes designed before the first query rather than after the first incident. Relational, document and key-value all earn their place somewhere.',
-    tools: ['PostgreSQL', 'MongoDB', 'SQL', 'NoSQL'],
+    tools: ['PostgreSQL', 'MySQL', 'DynamoDB', 'MongoDB', 'Elasticsearch', 'Redis', 'SQL & NoSQL'],
   },
   {
     area: 'cloud + delivery',
@@ -208,7 +208,7 @@ export const expertise: Expertise[] = [
     meta: '6 yrs',
     detail:
       'Running what I build. Containers and functions sized for real traffic, and a deploy path that degrades in pieces instead of failing all at once.',
-    tools: ['AWS', 'Kubernetes', 'Docker', 'GCP', 'serverless'],
+    tools: ['AWS', 'GCP', 'Kubernetes', 'Docker', 'serverless', 'CI/CD'],
   },
   {
     area: 'observability',
@@ -216,7 +216,7 @@ export const expertise: Expertise[] = [
     meta: 'daily',
     detail:
       'Instrumentation decided at design time, not bolted on after the first outage \u2014 enough structured logging, tracing and dashboards to follow one request end to end without shipping a new build.',
-    tools: ['Grafana', 'Sentry', 'Elasticsearch/Kibana', 'LogRocket'],
+    tools: ['Datadog', 'New Relic', 'Grafana', 'Sentry', 'Kibana', 'LogRocket'],
   },
   {
     area: 'product-facing frontend',
@@ -224,11 +224,11 @@ export const expertise: Expertise[] = [
     meta: '5 yrs',
     detail:
       'Shipping the whole path when that is what the problem needs: server-rendered flows and data-heavy interfaces sitting on APIs I own.',
-    tools: ['React', 'TanStack', 'SSR'],
+    tools: ['React', 'Next.js', 'Astro', 'TanStack', 'SPA', 'SSR'],
   },
 ]
 
-export const alsoKnown = ['Python', 'Puppeteer', 'NLU & LLMs', 'microservices'] as const
+export const alsoKnown = ['Python', 'Puppeteer', 'LLMs', 'NLU', 'microservices', 'WebSockets'] as const
 
 export const openSource = [
   {
