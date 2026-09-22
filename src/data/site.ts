@@ -69,7 +69,7 @@ export const heroCommands = [
   },
   {
     cmd: 'uptime',
-    out: 'up 10 years \u00b7 5 companies \u00b7 millions of messages/day',
+    out: 'up 10+ years \u00b7 5 companies \u00b7 load average: steady',
   },
   {
     cmd: 'cat ~/edu.md',
