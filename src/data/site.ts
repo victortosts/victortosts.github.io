@@ -23,8 +23,7 @@ export const links = {
 } as const
 
 export const about = [
-  'I build backend systems, and what I care about most is how they behave under pressure. Where the service boundaries fall, what crosses them, and what happens when one side gets slow or disappears: that is the part worth getting right first, because everything downstream inherits it.',
-  'Performance is a design decision rather than a later optimisation. I size things for the volume they will actually see, instrument them so that answering \u201cwhat happened\u201d takes minutes instead of days, and keep the pieces small enough that being wrong about one of them stays cheap to fix.',
+  'I\u2019m a builder. What I enjoy most is taking something from a rough idea to a system people rely on: the services and queues underneath, the interface on top, and the many small judgement calls in between about what to keep simple and what to leave room for. Most of what I know came from shipping software that had to keep working at volume, with real money and real deadlines attached.',
 ] as const
 
 export type CareerEntry = {
