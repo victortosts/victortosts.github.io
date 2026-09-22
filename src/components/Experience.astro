@@ -1,0 +1,100 @@
+---
+import { experience } from '../data/site'
+---
+
+<div class="exp">
+  {
+    experience.map((job) => (
+      <article class="job">
+        <header class="job-hd">
+          <h3 class="company">
+            {job.url ? (
+              <a href={job.url} class="plain" target="_blank" rel="noopener">
+                {job.company}
+              </a>
+            ) : (
+              job.company
+            )}
+            {job.client && <span class="client faint"> (client: {job.client})</span>}
+          </h3>
+          <span class="period faint">{job.period}</span>
+        </header>
+
+        <p class="role">{job.role}</p>
+
+        <ul class="bullets">
+          {job.bullets.map((b) => (
+            <li>{b}</li>
+          ))}
+        </ul>
+
+        <p class="stack-line">
+          <span class="faint">stack:</span> {job.stack.join(', ')}
+        </p>
+      </article>
+    ))
+  }
+</div>
+
+<style>
+  .exp {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .job-hd {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .company {
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  .client {
+    font-weight: 400;
+    font-size: 0.78rem;
+  }
+
+  .period {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .role {
+    color: var(--amber);
+    font-size: 0.8rem;
+    margin-top: 0.1rem;
+  }
+
+  .bullets {
+    margin: 0.7rem 0 0;
+    padding-left: 1.1rem;
+    list-style: none;
+  }
+
+  .bullets li {
+    position: relative;
+    font-size: 0.82rem;
+    color: var(--dim);
+    margin-bottom: 0.45rem;
+  }
+
+  .bullets li::before {
+    content: '-';
+    position: absolute;
+    left: -1.1rem;
+    color: var(--faint);
+  }
+
+  .stack-line {
+    margin-top: 0.65rem;
+    font-size: 0.75rem;
+    color: var(--teal);
+  }
+</style>

@@ -1,0 +1,90 @@
+---
+import type { Post } from '../data/posts'
+import { formatShort } from '../data/posts'
+
+interface Props {
+  posts: Post[]
+  empty?: string
+}
+
+const { posts, empty = 'no posts yet.' } = Astro.props
+---
+
+{
+  posts.length === 0 ? (
+    <p class="empty faint">{empty}</p>
+  ) : (
+    <ul class="posts">
+      {posts.map((post) => (
+        <li class="post">
+          <div class="post-main">
+            <h3 class="post-title">
+              <a href={`/blog/${post.id}`}>{post.data.title}</a>
+            </h3>
+            <p class="post-desc dim">{post.data.description}</p>
+            {post.data.tags.length > 0 && (
+              <p class="post-tags">
+                {post.data.tags.map((t) => (
+                  <span class="tag">{t}</span>
+                ))}
+              </p>
+            )}
+          </div>
+          <time class="post-date faint" datetime={post.data.date.toISOString()}>
+            {formatShort(post.data.date)}
+          </time>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .posts {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .post {
+    display: flex;
+    gap: 1.25rem;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .post-title {
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+
+  .post-desc {
+    font-size: 0.78rem;
+    margin-top: 0.15rem;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+  }
+
+  .post-date {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .empty {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 34rem) {
+    .post {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      gap: 0.2rem;
+    }
+  }
+</style>

@@ -1,0 +1,111 @@
+---
+import { education, honors, languages } from '../data/site'
+---
+
+<div class="edu">
+  {
+    education.map((e) => (
+      <div class="item">
+        <div class="item-hd">
+          <h3 class="school">
+            {e.school} <span class="short faint">({e.short})</span>
+          </h3>
+          <span class="period faint">{e.period}</span>
+        </div>
+        <p class="degree dim">{e.degree}</p>
+      </div>
+    ))
+  }
+
+  <div class="sub">
+    <h3 class="sub-hd">honors</h3>
+    {
+      honors.map((h) => (
+        <div class="item">
+          <div class="item-hd">
+            <p class="school">
+              {h.url ? (
+                <a href={h.url} class="plain" target="_blank" rel="noopener">
+                  {h.title}
+                </a>
+              ) : (
+                h.title
+              )}
+            </p>
+            <span class="period faint">{h.date}</span>
+          </div>
+          <p class="degree dim">{h.description}</p>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="sub">
+    <h3 class="sub-hd">languages</h3>
+    <p class="degree dim">
+      {languages.map((l, i) => (
+        <>
+          {i > 0 && <span class="faint"> · </span>}
+          <span class="lang">{l.name}</span> <span class="faint">{l.level}</span>
+        </>
+      ))}
+    </p>
+  </div>
+</div>
+
+<style>
+  .edu {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+
+  .item-hd {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 1rem;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .school {
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .short {
+    font-weight: 400;
+    font-size: 0.75rem;
+  }
+
+  .period {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .degree {
+    font-size: 0.8rem;
+    margin-top: 0.1rem;
+  }
+
+  .sub {
+    padding-top: 0.6rem;
+    border-top: 1px dashed var(--border);
+  }
+
+  .sub-hd {
+    font-size: 0.75rem;
+    color: var(--amber);
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+
+  .sub-hd::before {
+    content: '## ';
+    color: var(--faint);
+  }
+
+  .lang {
+    color: var(--text);
+  }
+</style>

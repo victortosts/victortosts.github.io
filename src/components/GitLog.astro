@@ -1,0 +1,98 @@
+---
+import { careerLog } from '../data/site'
+import Prompt from './Prompt.astro'
+---
+
+<div class="gitlog">
+  <Prompt cmd="git" args="log --oneline career" />
+
+  <details class="log-details">
+    <summary class="btn">git log</summary>
+    <div class="log-body">
+      {
+        careerLog.map((c) => (
+          <div class="log-row">
+            <span class="hash-col" style={`color: var(${c.head ? '--teal' : '--amber'})`}>{c.hash}</span>
+            <span class="date-col faint">{c.date}</span>
+            <span class="msg-col dim">
+              <span class="kind">{c.kind}:</span> {c.message}
+            </span>
+            {c.head && <span class="head-col">(HEAD)</span>}
+          </div>
+        ))
+      }
+    </div>
+  </details>
+</div>
+
+<style>
+  .gitlog {
+    margin-top: 1.75rem;
+  }
+
+  .log-details {
+    margin-top: 0.4rem;
+  }
+
+  summary {
+    list-style: none;
+    display: inline-block;
+    font-size: 0.75rem;
+    color: var(--dim);
+    cursor: pointer;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::before {
+    content: '[+ ';
+  }
+
+  summary::after {
+    content: ']';
+  }
+
+  .log-details[open] summary::before {
+    content: '[- ';
+  }
+
+  summary:hover {
+    color: var(--amber);
+  }
+
+  .log-body {
+    margin-top: 0.55rem;
+    font-size: 0.78rem;
+    line-height: 1.9;
+    overflow-x: auto;
+  }
+
+  .log-row {
+    display: flex;
+    gap: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .msg-col {
+    white-space: normal;
+  }
+
+  .kind {
+    color: var(--violet);
+  }
+
+  .head-col {
+    color: var(--violet);
+  }
+
+  @media (max-width: 34rem) {
+    .log-row {
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.4rem;
+      line-height: 1.6;
+    }
+  }
+</style>

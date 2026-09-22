@@ -1,0 +1,47 @@
+---
+import { links } from '../data/site'
+
+const year = new Date().getFullYear()
+---
+
+<footer>
+  <div class="wrap footer-inner">
+    <span class="faint">&copy; {year} victor tostes</span>
+    <span class="footer-links">
+      <a href={links.github} target="_blank" rel="noopener">github</a>
+      <a href={links.linkedin} target="_blank" rel="noopener">linkedin</a>
+      <a href={links.resume} target="_blank" rel="noopener nofollow" download>resume</a>
+      <a href={links.rss}>rss</a>
+    </span>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--border);
+    padding-block: 1.5rem 2rem;
+    font-size: 0.75rem;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-links a {
+    color: var(--dim);
+  }
+
+  .footer-links a:hover {
+    color: var(--amber);
+  }
+</style>

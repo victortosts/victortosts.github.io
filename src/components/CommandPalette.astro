@@ -1,0 +1,242 @@
+---
+import { sections, links } from '../data/site'
+
+interface Props {
+  /** On the homepage sections are anchors; elsewhere they need the leading slash. */
+  variant?: 'home' | 'page'
+}
+
+const { variant = 'home' } = Astro.props
+const prefix = variant === 'home' ? '' : '/'
+
+type Entry = { label: string; hint: string; action: string; value: string }
+
+const entries: Entry[] = [
+  ...sections.map((s) => ({
+    label: `goto ${s.label}`,
+    hint: `#${s.id}`,
+    action: 'anchor',
+    value: `${prefix}#${s.id}`,
+  })),
+  { label: 'open blog', hint: '/blog', action: 'href', value: '/blog' },
+  { label: 'open resume', hint: 'pdf', action: 'external', value: links.resume },
+  { label: 'open github', hint: 'external', action: 'external', value: links.github },
+  { label: 'open linkedin', hint: 'external', action: 'external', value: links.linkedin },
+  { label: 'subscribe rss', hint: '/rss.xml', action: 'href', value: links.rss },
+  { label: 'toggle theme', hint: 'dark / light', action: 'theme', value: '' },
+]
+---
+
+<div id="cmd-overlay" hidden>
+  <div id="cmd-box" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div id="cmd-input-wrap">
+      <span class="ps1">&gt;</span>
+      <input
+        id="cmd-input"
+        type="text"
+        placeholder="jump to..."
+        autocomplete="off"
+        spellcheck="false"
+        aria-controls="cmd-results"
+        aria-autocomplete="list"
+      />
+    </div>
+    <ul id="cmd-results" role="listbox" aria-label="Commands"></ul>
+    <div id="cmd-hint" class="faint">↑↓ navigate &nbsp;·&nbsp; enter select &nbsp;·&nbsp; esc close</div>
+  </div>
+</div>
+
+<script is:inline define:vars={{ entries }}>
+  ;(() => {
+    const overlay = document.getElementById('cmd-overlay')
+    const input = document.getElementById('cmd-input')
+    const results = document.getElementById('cmd-results')
+    if (!overlay || !input || !results) return
+
+    let active = 0
+    let visible = entries
+    let lastFocused = null
+
+    function render() {
+      results.innerHTML = ''
+      if (visible.length === 0) {
+        const li = document.createElement('li')
+        li.className = 'cmd-empty'
+        li.textContent = 'no matches'
+        results.appendChild(li)
+        return
+      }
+      visible.forEach((e, i) => {
+        const li = document.createElement('li')
+        li.className = 'cmd-item' + (i === active ? ' active' : '')
+        li.setAttribute('role', 'option')
+        li.setAttribute('aria-selected', String(i === active))
+        li.id = `cmd-opt-${i}`
+        li.innerHTML = `<span class="cmd-label"></span><span class="cmd-hint-r faint"></span>`
+        li.querySelector('.cmd-label').textContent = e.label
+        li.querySelector('.cmd-hint-r').textContent = e.hint
+        li.addEventListener('mouseenter', () => {
+          active = i
+          render()
+        })
+        li.addEventListener('click', () => run(e))
+        results.appendChild(li)
+      })
+      input.setAttribute('aria-activedescendant', `cmd-opt-${active}`)
+    }
+
+    function filter(q) {
+      const needle = q.trim().toLowerCase()
+      visible = needle ? entries.filter((e) => (e.label + ' ' + e.hint).toLowerCase().includes(needle)) : entries
+      active = 0
+      render()
+    }
+
+    function open() {
+      lastFocused = document.activeElement
+      overlay.hidden = false
+      input.value = ''
+      filter('')
+      input.focus()
+    }
+
+    function close() {
+      overlay.hidden = true
+      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus()
+    }
+
+    function run(entry) {
+      close()
+      if (entry.action === 'theme') {
+        document.getElementById('theme-btn')?.click()
+      } else if (entry.action === 'external') {
+        window.open(entry.value, '_blank', 'noopener')
+      } else {
+        window.location.href = entry.value
+      }
+    }
+
+    document.getElementById('palette-btn')?.addEventListener('click', open)
+
+    document.addEventListener('keydown', (ev) => {
+      const tag = document.activeElement?.tagName
+      const typing = tag === 'INPUT' || tag === 'TEXTAREA'
+      if (ev.key === '/' && !typing && overlay.hidden) {
+        ev.preventDefault()
+        open()
+        return
+      }
+      if (overlay.hidden) return
+      if (ev.key === 'Escape') {
+        ev.preventDefault()
+        close()
+      } else if (ev.key === 'ArrowDown') {
+        ev.preventDefault()
+        active = (active + 1) % Math.max(visible.length, 1)
+        render()
+      } else if (ev.key === 'ArrowUp') {
+        ev.preventDefault()
+        active = (active - 1 + visible.length) % Math.max(visible.length, 1)
+        render()
+      } else if (ev.key === 'Enter') {
+        ev.preventDefault()
+        if (visible[active]) run(visible[active])
+      } else if (ev.key === 'Tab') {
+        // Nothing else in the dialog is focusable; keep focus on the input.
+        ev.preventDefault()
+      }
+    })
+
+    input.addEventListener('input', () => filter(input.value))
+    overlay.addEventListener('mousedown', (ev) => {
+      if (ev.target === overlay) close()
+    })
+  })()
+</script>
+
+<style is:global>
+  #cmd-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: color-mix(in srgb, #000 55%, transparent);
+    display: flex;
+    justify-content: center;
+    padding: 12vh 1rem 1rem;
+  }
+
+  #cmd-overlay[hidden] {
+    display: none;
+  }
+
+  #cmd-box {
+    width: 100%;
+    max-width: 30rem;
+    height: fit-content;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgb(0 0 0 / 0.35);
+  }
+
+  #cmd-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #cmd-input {
+    flex: 1;
+    font: inherit;
+    font-size: 0.85rem;
+    color: var(--text);
+    background: none;
+    border: none;
+    outline: none;
+  }
+
+  #cmd-input::placeholder {
+    color: var(--faint);
+  }
+
+  #cmd-results {
+    list-style: none;
+    max-height: 16rem;
+    overflow-y: auto;
+  }
+
+  .cmd-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.8rem;
+    color: var(--dim);
+    cursor: pointer;
+  }
+
+  .cmd-item.active {
+    background: var(--bg2);
+    color: var(--text);
+    box-shadow: inset 2px 0 0 var(--amber);
+  }
+
+  .cmd-hint-r {
+    font-size: 0.72rem;
+  }
+
+  .cmd-empty {
+    padding: 0.6rem 0.85rem;
+    font-size: 0.8rem;
+    color: var(--faint);
+  }
+
+  #cmd-hint {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.7rem;
+    border-top: 1px solid var(--border);
+  }
+</style>

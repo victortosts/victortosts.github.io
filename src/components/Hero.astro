@@ -1,0 +1,142 @@
+---
+import { profile, links } from '../data/site'
+import Prompt from './Prompt.astro'
+---
+
+<section id="home" class="hero">
+  <Prompt host="local" cmd="ssh" args={`${profile.handle}@${profile.host}`} />
+  <p class="connected faint">Connected to {profile.handle}@{profile.host}. Welcome.</p>
+
+  <div class="hero-out">
+    <h1 class="hero-name">{profile.name}</h1>
+    <p class="hero-role">// {profile.role}</p>
+    <p class="hero-loc dim">{profile.location}</p>
+    <p class="hero-mail dim">
+      <span data-mail-user={profile.email.user} data-mail-domain={profile.email.domain}>
+        {profile.email.user} [at] {profile.email.domain.replace('.', ' [dot] ')}
+      </span>
+    </p>
+
+    <p class="hero-links">
+      <a href={links.resume} target="_blank" rel="noopener nofollow" download>[resume.pdf]</a>
+      <a href={links.blog}>[blog]</a>
+      <a href={links.linkedin} target="_blank" rel="noopener">[linkedin]</a>
+      <a href={links.github} target="_blank" rel="noopener">[github]</a>
+    </p>
+  </div>
+
+  <div class="prompt typed-line">
+    <span class="ps1">{profile.handle}@{profile.host}:~$</span>
+    <span id="typed-cmd"></span><span class="cursor"></span>
+  </div>
+  <p id="typed-out" class="dim">{profile.tagline}</p>
+</section>
+
+<style>
+  .hero {
+    padding-top: 0.5rem;
+  }
+
+  .connected {
+    font-size: 0.78rem;
+    margin: 0.3rem 0 1.1rem;
+  }
+
+  .hero-out {
+    border-left: 2px solid var(--border);
+    padding-left: 1.1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .hero-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-role {
+    color: var(--amber);
+    font-size: 0.85rem;
+    margin-top: 0.15rem;
+  }
+
+  .hero-loc,
+  .hero-mail {
+    font-size: 0.78rem;
+  }
+
+  .hero-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1rem;
+    margin-top: 0.9rem;
+    font-size: 0.78rem;
+  }
+
+  .hero-links a {
+    color: var(--teal);
+  }
+
+  .typed-line {
+    min-height: 1.6em;
+  }
+
+  #typed-out {
+    padding-left: 1.5rem;
+    font-size: 0.8rem;
+    margin-top: 0.2rem;
+    transition: opacity 0.2s ease;
+  }
+
+  @media (max-width: 30rem) {
+    #typed-out {
+      padding-left: 0;
+    }
+  }
+</style>
+
+<script is:inline>
+  ;(() => {
+    const cmdEl = document.getElementById('typed-cmd')
+    const outEl = document.getElementById('typed-out')
+    if (!cmdEl || !outEl) return
+
+    const command = 'whoami --verbose'
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (reduced) {
+      cmdEl.textContent = command
+      return
+    }
+
+    // The answer is already in the DOM, so its box is reserved and nothing shifts.
+    outEl.style.opacity = '0'
+
+    let i = 0
+    const type = () => {
+      cmdEl.textContent = command.slice(0, ++i)
+      if (i < command.length) {
+        setTimeout(type, 55)
+      } else {
+        setTimeout(() => (outEl.style.opacity = '1'), 320)
+      }
+    }
+    setTimeout(type, 500)
+  })()
+</script>
+
+<script is:inline>
+  // Assemble the address only in the browser, so the markup never ships a plain mailto.
+  ;(() => {
+    const el = document.querySelector('[data-mail-user]')
+    if (!(el instanceof HTMLElement)) return
+    const { mailUser, mailDomain } = el.dataset
+    if (!mailUser || !mailDomain) return
+    const addr = `${mailUser}@${mailDomain}`
+    const a = document.createElement('a')
+    a.href = `mailto:${addr}`
+    a.textContent = addr
+    el.replaceChildren(a)
+  })()
+</script>

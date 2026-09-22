@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro'
+import { profile } from '../data/site'
+---
+
+<Base title={`404 — ${profile.name}`} description="Page not found.">
+  <div class="nf">
+    <div class="prompt">
+      <span class="ps1">{profile.handle}@{profile.host}:~$</span>
+      <span class="cmd" id="attempted">cd</span>
+    </div>
+    <p class="msg">bash: <span id="path">that path</span>: No such file or directory</p>
+    <p class="hint dim">exit status 404</p>
+    <p class="links">
+      <a href="/">[~/]</a>
+      <a href="/blog">[~/blog]</a>
+    </p>
+  </div>
+</Base>
+
+<style>
+  .nf {
+    padding-block: 3rem;
+  }
+
+  .msg {
+    font-size: 0.85rem;
+    margin-top: 0.6rem;
+  }
+
+  .hint {
+    font-size: 0.78rem;
+    margin-top: 0.2rem;
+  }
+
+  .links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  .links a {
+    color: var(--teal);
+  }
+</style>
+
+<script is:inline>
+  ;(() => {
+    const path = window.location.pathname
+    const cmd = document.getElementById('attempted')
+    const target = document.getElementById('path')
+    if (cmd) cmd.textContent = `cd ${path}`
+    if (target) target.textContent = path
+  })()
+</script>

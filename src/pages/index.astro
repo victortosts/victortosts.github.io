@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro'
+import Hero from '../components/Hero.astro'
+import Section from '../components/Section.astro'
+import GitLog from '../components/GitLog.astro'
+import Stack from '../components/Stack.astro'
+import Experience from '../components/Experience.astro'
+import Education from '../components/Education.astro'
+import PostList from '../components/PostList.astro'
+import { about, profile } from '../data/site'
+import { getPosts } from '../data/posts'
+
+const posts = (await getPosts()).slice(0, 3)
+---
+
+<Base title={`${profile.name} — ${profile.role}`} variant="home">
+  <Hero />
+
+  <Section id="about" label="about">
+    <div class="about-text">
+      {about.map((p) => <p set:html={p} />)}
+    </div>
+    <GitLog />
+  </Section>
+
+  <Section id="stack" label="stack">
+    <Stack />
+  </Section>
+
+  <Section id="work" label="work experience">
+    <Experience />
+  </Section>
+
+  <Section id="education" label="education">
+    <Education />
+  </Section>
+
+  <Section id="writing" label="writing">
+    <PostList posts={posts} empty="nothing published yet — first post is on the way." />
+    <p class="more"><a href="/blog" class="dim">~/blog →</a></p>
+  </Section>
+</Base>
+
+<style>
+  .about-text p {
+    font-size: 0.85rem;
+    color: var(--dim);
+  }
+
+  .about-text p + p {
+    margin-top: 0.9rem;
+  }
+
+  .more {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+  }
+</style>

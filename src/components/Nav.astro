@@ -1,0 +1,120 @@
+---
+import { sections } from '../data/site'
+
+interface Props {
+  /** Home shows in-page anchors; other pages link back to the homepage sections. */
+  variant?: 'home' | 'page'
+}
+
+const { variant = 'home' } = Astro.props
+const prefix = variant === 'home' ? '' : '/'
+---
+
+<nav>
+  <div class="wrap">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand plain"><span class="faint">~/</span>victor</a>
+
+      <button class="btn mobile-btn" id="mobile-btn" aria-expanded="false" aria-controls="nav-links">[menu]</button>
+
+      <div class="nav-links" id="nav-links">
+        {sections.map((s) => <a href={`${prefix}#${s.id}`} class="nav-link">{s.label}</a>)}
+        <a href="/blog" class="nav-link">blog</a>
+        <button class="btn" id="palette-btn" aria-haspopup="dialog" aria-label="Open command palette">[/]</button>
+        <button class="btn" id="theme-btn" aria-label="Toggle color theme">[theme]</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: var(--nav-h);
+  }
+
+  .nav-brand {
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-bottom: none;
+  }
+
+  .nav-brand:hover {
+    color: var(--amber);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .nav-link {
+    font-size: 0.78rem;
+    color: var(--dim);
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+    border-bottom-color: transparent;
+  }
+
+  .mobile-btn {
+    display: none;
+  }
+
+  @media (max-width: 40rem) {
+    .mobile-btn {
+      display: block;
+    }
+
+    .nav-links {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.35rem;
+      padding: 0.9rem var(--gutter) 1.1rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-links.open {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('mobile-btn')
+  const list = document.getElementById('nav-links')
+
+  btn?.addEventListener('click', () => {
+    const open = list?.classList.toggle('open') ?? false
+    btn.setAttribute('aria-expanded', String(open))
+    btn.textContent = open ? '[close]' : '[menu]'
+  })
+
+  list?.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => {
+      list.classList.remove('open')
+      btn?.setAttribute('aria-expanded', 'false')
+      if (btn) btn.textContent = '[menu]'
+    }),
+  )
+</script>

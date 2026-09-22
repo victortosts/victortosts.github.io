@@ -1,0 +1,41 @@
+---
+import Base from '../../layouts/Base.astro'
+import Prompt from '../../components/Prompt.astro'
+import PostList from '../../components/PostList.astro'
+import { getPosts } from '../../data/posts'
+import { profile, links } from '../../data/site'
+
+const posts = await getPosts()
+---
+
+<Base title={`blog — ${profile.name}`} description={`Notes on backend engineering by ${profile.name}.`}>
+  <Prompt cmd="ls" args="-lt ~/blog" />
+
+  <header class="hd">
+    <h1 class="sec-heading"><span class="hash">#</span><span class="label">blog</span></h1>
+    <p class="dim intro">
+      Notes on backends, event-driven systems, and whatever breaks in production this month.
+      <a href={links.rss}>rss</a>
+    </p>
+  </header>
+
+  <PostList posts={posts} />
+
+  <p class="back"><a href="/" class="dim">← ~/</a></p>
+</Base>
+
+<style>
+  .hd {
+    margin-top: 1.25rem;
+  }
+
+  .intro {
+    font-size: 0.8rem;
+    margin-bottom: 2rem;
+  }
+
+  .back {
+    margin-top: 3rem;
+    font-size: 0.75rem;
+  }
+</style>

@@ -1,0 +1,17 @@
+---
+import { profile } from '../data/site'
+
+interface Props {
+  host?: string
+  cmd: string
+  args?: string
+}
+
+const { host = profile.host, cmd, args } = Astro.props
+---
+
+<div class="prompt">
+  <span class="ps1">{profile.handle}@{host}:~$</span>
+  <span class="cmd">{cmd}</span>
+  {args && <span class="arg">{args}</span>}
+</div>

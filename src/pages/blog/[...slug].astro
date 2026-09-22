@@ -1,0 +1,214 @@
+---
+import { render } from 'astro:content'
+import type { GetStaticPaths } from 'astro'
+import Base from '../../layouts/Base.astro'
+import Prompt from '../../components/Prompt.astro'
+import { getPosts, formatLong, type Post } from '../../data/posts'
+import { profile } from '../../data/site'
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getPosts()
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }))
+}
+
+interface Props {
+  post: Post
+}
+
+const { post } = Astro.props
+const { Content } = await render(post)
+---
+
+<Base title={`${post.data.title} — ${profile.name}`} description={post.data.description} ogType="article">
+  <Prompt cmd="cat" args={`~/blog/${post.id}.md`} />
+
+  <article class="post">
+    <header class="post-hd">
+      <h1>{post.data.title}</h1>
+      <p class="meta faint">
+        <time datetime={post.data.date.toISOString()}>{formatLong(post.data.date)}</time>
+        {post.data.tags.length > 0 && <span class="tags">{post.data.tags.map((t) => <span class="tag">{t}</span>)}</span>}
+      </p>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+
+  <p class="back"><a href="/blog" class="dim">← ~/blog</a></p>
+</Base>
+
+<style>
+  .post-hd {
+    margin: 1.25rem 0 2rem;
+  }
+
+  h1 {
+    font-size: 1.35rem;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.9rem;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .back {
+    margin-top: 3rem;
+    font-size: 0.75rem;
+  }
+</style>
+
+<style is:global>
+  .prose {
+    font-size: 0.85rem;
+    line-height: 1.85;
+    color: var(--dim);
+  }
+
+  .prose > * + * {
+    margin-top: 1.1rem;
+  }
+
+  .prose h2,
+  .prose h3 {
+    color: var(--text);
+    line-height: 1.4;
+    margin-top: 2.25rem;
+  }
+
+  .prose h2 {
+    font-size: 1rem;
+  }
+
+  .prose h2::before {
+    content: '## ';
+    color: var(--faint);
+  }
+
+  .prose h3 {
+    font-size: 0.9rem;
+  }
+
+  .prose h3::before {
+    content: '### ';
+    color: var(--faint);
+  }
+
+  .prose strong {
+    color: var(--text);
+  }
+
+  .prose p a,
+  .prose li a {
+    border-bottom-color: color-mix(in srgb, var(--link) 45%, transparent);
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.3rem;
+  }
+
+  .prose li + li {
+    margin-top: 0.35rem;
+  }
+
+  .prose ul {
+    list-style: none;
+  }
+
+  .prose ul > li {
+    position: relative;
+  }
+
+  .prose ul > li::before {
+    content: '-';
+    position: absolute;
+    left: -1.3rem;
+    color: var(--faint);
+  }
+
+  .prose blockquote {
+    border-left: 2px solid var(--border);
+    padding-left: 1rem;
+    color: var(--faint);
+  }
+
+  .prose code {
+    font-size: 0.82em;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.05em 0.35em;
+    color: var(--teal);
+  }
+
+  .prose pre {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    font-size: 0.78rem;
+    line-height: 1.7;
+  }
+
+  .prose pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  /* Shiki emits both palettes as CSS variables; pick one per site theme. */
+  .astro-code,
+  .astro-code span {
+    color: var(--shiki-dark);
+    background-color: transparent;
+  }
+
+  [data-theme='light'] .astro-code,
+  [data-theme='light'] .astro-code span {
+    color: var(--shiki-light);
+    background-color: transparent;
+  }
+
+  .prose hr {
+    border: none;
+    border-top: 1px dashed var(--border);
+  }
+
+  .prose img {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+
+  .prose th,
+  .prose td {
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.6rem;
+    text-align: left;
+  }
+
+  .prose th {
+    color: var(--text);
+  }
+</style>

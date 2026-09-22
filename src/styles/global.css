@@ -1,0 +1,247 @@
+/* ── THEME TOKENS ──────────────────────────────────────── */
+:root,
+[data-theme='dark'] {
+  --bg: #0f1419;
+  --bg2: #171d24;
+  --border: #2a333d;
+  --text: #cbd5e1;
+  --dim: #8b98a8;
+  --faint: #78838f;
+  --amber: #e0a458;
+  --teal: #5ec6b0;
+  --violet: #a48ce0;
+  --link: #6fb3e0;
+  --selection: #2a3a47;
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --bg: #fbfaf7;
+  --bg2: #f2efe9;
+  --border: #d8d2c6;
+  --text: #24292f;
+  --dim: #5c6672;
+  --faint: #68727e;
+  --amber: #9a6212;
+  --teal: #0f7a6a;
+  --violet: #6b4fc0;
+  --link: #1a6fb5;
+  --selection: #e4ddcd;
+  color-scheme: light;
+}
+
+:root {
+  --gutter: 1.5rem;
+  --measure: 46rem;
+  --nav-h: 3.25rem;
+}
+
+/* ── RESET ─────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, 'Courier New', monospace;
+  font-size: 16px;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 1rem);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.875rem;
+  line-height: 1.75;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--selection);
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ── LAYOUT ────────────────────────────────────────────── */
+.wrap {
+  width: 100%;
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+main {
+  flex: 1 0 auto;
+  padding-block: 2.5rem 4rem;
+}
+
+section {
+  padding-block: 2.25rem;
+}
+
+section + section {
+  border-top: 1px solid var(--border);
+}
+
+/* ── LINKS ─────────────────────────────────────────────── */
+a {
+  color: var(--link);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+a:hover {
+  border-bottom-color: currentColor;
+}
+
+/* Inline links in body copy carry an underline, so color is never the only cue. */
+a.ext,
+a.ext:visited {
+  color: var(--teal);
+  border-bottom-color: color-mix(in srgb, var(--teal) 45%, transparent);
+}
+
+a.ext:hover {
+  border-bottom-color: currentColor;
+}
+
+a.plain,
+a.plain:visited {
+  color: inherit;
+}
+
+/* ── TERMINAL PRIMITIVES ───────────────────────────────── */
+.prompt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.ps1 {
+  color: var(--amber);
+  white-space: nowrap;
+}
+
+.cmd {
+  color: var(--text);
+}
+
+.arg {
+  color: var(--dim);
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  background: var(--amber);
+  translate: 0 0.15em;
+  animation: blink 1.1s step-end infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.sec-heading {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin-bottom: 1.25rem;
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+
+.sec-heading .hash {
+  color: var(--faint);
+  margin-right: 0.1em;
+}
+
+.sec-heading .label {
+  color: var(--text);
+}
+
+.hl {
+  color: var(--teal);
+}
+
+.dim {
+  color: var(--dim);
+}
+
+.faint {
+  color: var(--faint);
+}
+
+/* Bracket-style button, e.g. [theme] */
+.btn {
+  font-size: 0.75rem;
+  color: var(--dim);
+  padding: 0.15rem 0.1rem;
+  transition: color 0.12s ease;
+}
+
+.btn:hover {
+  color: var(--amber);
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  color: var(--dim);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.05rem 0.4rem;
+}
+
+/* ── REDUCED MOTION ────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
