@@ -294,8 +294,8 @@ export const languages = [
 /** Nav entries double as command palette targets. */
 export const sections = [
   { id: 'about', label: 'about' },
-  { id: 'stack', label: 'stack' },
-  { id: 'work', label: 'work' },
   { id: 'education', label: 'education' },
+  { id: 'work', label: 'work' },
+  { id: 'stack', label: 'stack' },
   { id: 'open-source', label: 'open source' },
 ] as const
