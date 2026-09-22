@@ -12,8 +12,6 @@ export const profile = {
   tagline: 'Node.js and TypeScript, mostly. Event-driven systems, microservices, and the observability to keep them honest.',
   description:
     'Victor Tostes — Senior backend and full-stack engineer. Node.js, TypeScript, microservices, event-driven systems on AWS.',
-  /** Split so the address is assembled at runtime, not sitting in the markup as plain text. */
-  email: { user: 'victorltbarbosa', domain: 'gmail.com' },
 } as const
 
 export const links = {
@@ -25,8 +23,8 @@ export const links = {
 } as const
 
 export const about = [
-  'I have spent about a decade building backends in Node.js and TypeScript — the kind that carry money, messages and medical bills, where being wrong is expensive. Today I am a Senior Software Engineer at <span class="hl">Xprt</span>, working on <span class="hl">Payzen</span>, a US healthcare fintech that makes medical bills affordable through personalized "care now, pay later" plans. I build across the whole product: the SSR onboarding funnel that enrolls <span class="hl">thousands of payment plans a day</span>, the React self-service platform where patients manage them, and the Fastify microservices on Kubernetes underneath.',
-  'Before that I led the ROBOS.im chat and bot platform through its acquisition by <a class="ext" href="https://hotmart.com" target="_blank" rel="noopener">Hotmart</a>, then owned it end to end — designing a multi-channel communication system across email, SMS, WhatsApp and chat handling <span class="hl">millions of messages per day</span> on an event-driven AWS architecture. I like systems that are legible under load: clear boundaries, real queues, and traces that survive a bad night.',
+  'I build backend systems, and what I care about most is how they behave under pressure. Where the service boundaries fall, what crosses them, and what happens when one side gets slow or disappears: that is the part worth getting right first, because everything downstream inherits it.',
+  'Performance is a design decision rather than a later optimisation. I size things for the volume they will actually see, instrument them so that answering \u201cwhat happened\u201d takes minutes instead of days, and keep the pieces small enough that being wrong about one of them stays cheap to fix.',
 ] as const
 
 export type CareerEntry = {
@@ -58,6 +56,10 @@ export const heroCommands = [
   {
     cmd: 'git log --oneline -1',
     out: 'a1b2c3d feat: joined Xprt \u2014 building Payzen',
+  },
+  {
+    cmd: 'gh pr list -s merged',
+    out: '4 merged \u00b7 fastify \u00b7 fluent-json-schema \u00b7 orama',
   },
   {
     cmd: 'uptime',
@@ -157,14 +159,99 @@ export const experience = [
   },
 ] as const
 
-export const stack = [
-  { label: 'languages', items: ['TypeScript', 'JavaScript', 'Python', 'SQL'] },
-  { label: 'backend', items: ['Node.js', 'Fastify', 'microservices', 'serverless', 'event-driven', 'WebSockets', 'REST'] },
-  { label: 'frontend', items: ['React', 'TanStack', 'SSR'] },
-  { label: 'data', items: ['PostgreSQL', 'MongoDB', 'SQL & NoSQL'] },
-  { label: 'cloud', items: ['AWS (Lambda, SNS, SQS)', 'GCP', 'Kubernetes', 'Docker', 'DevOps'] },
-  { label: 'observability', items: ['Grafana', 'Sentry', 'Elasticsearch/Kibana', 'LogRocket'] },
-  { label: 'ai', items: ['LLMs', 'NLU'] },
+export type Expertise = {
+  area: string
+  /** Drives the colour of the level word: core reads louder than strong. */
+  level: 'core' | 'strong'
+  /** How long, or how often. */
+  meta: string
+  /** What the capability actually is, independent of any one tool. */
+  detail: string
+  /** The concrete technologies, listed after the capability rather than as the point. */
+  tools: string[]
+}
+
+export const expertise: Expertise[] = [
+  {
+    area: 'backend engineering',
+    level: 'core',
+    meta: '10 yrs',
+    detail:
+      'Services designed around their contracts: validation at the edge, errors that say what went wrong, and APIs that keep their shape as the product moves underneath them.',
+    tools: ['TypeScript', 'Node.js', 'Fastify', 'REST', 'JSON Schema'],
+  },
+  {
+    area: 'distributed systems',
+    level: 'core',
+    meta: '6 yrs',
+    detail:
+      'Splitting work across services and queues without losing track of it \u2014 fan-out, idempotent consumers, retries with backoff, and dead letters someone actually reads.',
+    tools: ['SNS', 'SQS', 'Lambda', 'event-driven', 'WebSockets'],
+  },
+  {
+    area: 'data modelling',
+    level: 'core',
+    meta: '10 yrs',
+    detail:
+      'Letting the access patterns pick the model: normalised where writes need consistency, denormalised where reads dominate, keys and indexes designed before the first query rather than after the first incident. Relational, document and key-value all earn their place somewhere.',
+    tools: ['PostgreSQL', 'MongoDB', 'SQL', 'NoSQL'],
+  },
+  {
+    area: 'cloud + delivery',
+    level: 'core',
+    meta: '6 yrs',
+    detail:
+      'Running what I build. Containers and functions sized for real traffic, and a deploy path that degrades in pieces instead of failing all at once.',
+    tools: ['AWS', 'Kubernetes', 'Docker', 'GCP', 'serverless'],
+  },
+  {
+    area: 'observability',
+    level: 'strong',
+    meta: 'daily',
+    detail:
+      'Instrumentation decided at design time, not bolted on after the first outage \u2014 enough structured logging, tracing and dashboards to follow one request end to end without shipping a new build.',
+    tools: ['Grafana', 'Sentry', 'Elasticsearch/Kibana', 'LogRocket'],
+  },
+  {
+    area: 'product-facing frontend',
+    level: 'strong',
+    meta: '5 yrs',
+    detail:
+      'Shipping the whole path when that is what the problem needs: server-rendered flows and data-heavy interfaces sitting on APIs I own.',
+    tools: ['React', 'TanStack', 'SSR'],
+  },
+]
+
+export const alsoKnown = ['Python', 'Puppeteer', 'NLU & LLMs', 'microservices'] as const
+
+export const openSource = [
+  {
+    repo: 'fastify/fastify',
+    url: 'https://github.com/fastify/fastify',
+    note: 'the Node.js web framework',
+    prs: [{ num: 4520, url: 'https://github.com/fastify/fastify/pull/4520' }],
+    detail:
+      'Passing an incomplete logger instance used to fail silently. Added a validateLogger step and the FST_ERR_LOG_INVALID_LOGGER error so a partial logger throws at startup instead of losing logs at runtime.',
+  },
+  {
+    repo: 'fastify/fluent-json-schema',
+    url: 'https://github.com/fastify/fluent-json-schema',
+    note: 'fluent API for JSON Schema',
+    prs: [
+      { num: 160, url: 'https://github.com/fastify/fluent-json-schema/pull/160' },
+      { num: 161, url: 'https://github.com/fastify/fluent-json-schema/pull/161' },
+    ],
+    detail:
+      'Added ObjectSchema.without(), which derives a schema by subtracting properties instead of re-listing everything you want to keep, and the JSON Schema 2019-09 deprecated keyword on BaseSchema, TypeScript definitions included.',
+  },
+  {
+    repo: 'oramasearch/orama',
+    url: 'https://github.com/oramasearch/orama',
+    note: 'full-text search engine, formerly Lyra',
+    prs: [{ num: 141, url: 'https://github.com/oramasearch/orama/pull/141' }],
+    detail:
+      'Rewrote the tokenizer\u2019s diacritics replacer to work on char codes with positional access rather than map lookups \u2014 benchmarked faster in the worst, medium and best case, which speeds up every insert.',
+  },
 ] as const
 
 export const education = [
@@ -203,6 +290,7 @@ export const sections = [
   { id: 'about', label: 'about' },
   { id: 'stack', label: 'stack' },
   { id: 'work', label: 'work' },
+  { id: 'open-source', label: 'open source' },
   { id: 'education', label: 'education' },
   { id: 'writing', label: 'writing' },
 ] as const

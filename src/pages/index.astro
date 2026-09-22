@@ -6,6 +6,7 @@ import GitLog from '../components/GitLog.astro'
 import Stack from '../components/Stack.astro'
 import Experience from '../components/Experience.astro'
 import Education from '../components/Education.astro'
+import OpenSource from '../components/OpenSource.astro'
 import PostList from '../components/PostList.astro'
 import { about, profile } from '../data/site'
 import { getPosts } from '../data/posts'
@@ -14,7 +15,7 @@ const allPosts = await getPosts()
 const posts = allPosts.slice(0, 3)
 ---
 
-<Base title={`${profile.name} — ${profile.role}`} variant="home">
+<Base title={profile.name} variant="home">
   <Hero postCount={allPosts.length} />
 
   <Section id="about" label="about" cmd="cat" args="about.md">
@@ -30,6 +31,15 @@ const posts = allPosts.slice(0, 3)
 
   <Section id="work" label="work experience" cmd="cat" args="~/work.md">
     <Experience />
+  </Section>
+
+  <Section
+    id="open-source"
+    label="open source"
+    cmd="gh"
+    args="pr list --author victortosts --state merged"
+  >
+    <OpenSource />
   </Section>
 
   <Section id="education" label="education" cmd="cat" args="~/edu.md">

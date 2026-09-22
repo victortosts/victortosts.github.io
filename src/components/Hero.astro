@@ -17,13 +17,7 @@ const { postCount = 0 } = Astro.props
   <div class="hero-out" data-reveal>
     <h1 class="hero-name">{profile.name}</h1>
     <p class="hero-role">// {profile.role}</p>
-    <p class="hero-loc dim">{profile.location}</p>
-    <p class="hero-mail dim">
-      <span data-mail-user={profile.email.user} data-mail-domain={profile.email.domain}>
-        {profile.email.user} [at] {profile.email.domain.replace('.', ' [dot] ')}
-      </span>
-    </p>
-
+    <p class="hero-loc">{profile.location}</p>
     <p class="hero-links">
       <a href={links.resume} target="_blank" rel="noopener nofollow" download>[resume.pdf]</a>
       <a href={links.blog}>[blog]</a>
@@ -64,9 +58,9 @@ const { postCount = 0 } = Astro.props
     margin-top: 0.15rem;
   }
 
-  .hero-loc,
-  .hero-mail {
+  .hero-loc {
     font-size: 0.78rem;
+    color: var(--link);
   }
 
   .hero-links {
@@ -82,18 +76,3 @@ const { postCount = 0 } = Astro.props
   }
 
 </style>
-
-<script is:inline>
-  // Assemble the address only in the browser, so the markup never ships a plain mailto.
-  ;(() => {
-    const el = document.querySelector('[data-mail-user]')
-    if (!(el instanceof HTMLElement)) return
-    const { mailUser, mailDomain } = el.dataset
-    if (!mailUser || !mailDomain) return
-    const addr = `${mailUser}@${mailDomain}`
-    const a = document.createElement('a')
-    a.href = `mailto:${addr}`
-    a.textContent = addr
-    el.replaceChildren(a)
-  })()
-</script>
