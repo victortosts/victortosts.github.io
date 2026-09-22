@@ -1,5 +1,5 @@
 ---
-import { sections, links } from '../data/site'
+import { sections, links, features } from '../data/site'
 
 interface Props {
   /** On the homepage sections are anchors; elsewhere they need the leading slash. */
@@ -18,13 +18,20 @@ const entries: Entry[] = [
     action: 'anchor',
     value: `${prefix}#${s.id}`,
   })),
-  { label: 'open blog', hint: '/blog', action: 'href', value: '/blog' },
   { label: 'open resume', hint: 'pdf', action: 'external', value: links.resume },
   { label: 'open github', hint: 'external', action: 'external', value: links.github },
   { label: 'open linkedin', hint: 'external', action: 'external', value: links.linkedin },
-  { label: 'subscribe rss', hint: '/rss.xml', action: 'href', value: links.rss },
   { label: 'toggle theme', hint: 'dark / light', action: 'theme', value: '' },
 ]
+
+if (features.blog) {
+  entries.splice(
+    sections.length,
+    0,
+    { label: 'open blog', hint: '/blog', action: 'href', value: '/blog' },
+    { label: 'subscribe rss', hint: '/rss.xml', action: 'href', value: links.rss },
+  )
+}
 ---
 
 <div id="cmd-overlay" hidden>

@@ -3,7 +3,7 @@ import '../styles/global.css'
 import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
 import CommandPalette from '../components/CommandPalette.astro'
-import { profile } from '../data/site'
+import { profile, features } from '../data/site'
 
 interface Props {
   title?: string
@@ -31,7 +31,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="alternate" type="application/rss+xml" title={`${profile.name} — blog`} href="/rss.xml" />
+    {
+      features.blog && (
+        <link rel="alternate" type="application/rss+xml" title={`${profile.name} — blog`} href="/rss.xml" />
+      )
+    }
     <meta name="generator" content={Astro.generator} />
 
     <meta property="og:type" content={ogType} />

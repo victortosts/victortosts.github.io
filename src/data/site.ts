@@ -14,6 +14,13 @@ export const profile = {
     'Victor Tostes — Senior backend and full-stack engineer. Node.js, TypeScript, microservices, event-driven systems on AWS.',
 } as const
 
+/**
+ * The blog is written and working, but unpublished until there is something to
+ * read. To bring it back: flip `blog` to true and drop the `_` prefix from
+ * `src/pages/_blog/` and `src/pages/_rss.xml.ts`.
+ */
+export const features = { blog: false } as const
+
 export const links = {
   github: 'https://github.com/victortosts',
   linkedin: 'https://linkedin.com/in/victorltb',
@@ -291,5 +298,4 @@ export const sections = [
   { id: 'work', label: 'work' },
   { id: 'open-source', label: 'open source' },
   { id: 'education', label: 'education' },
-  { id: 'writing', label: 'writing' },
 ] as const

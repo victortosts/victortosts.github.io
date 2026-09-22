@@ -1,5 +1,5 @@
 ---
-import { profile, heroCommands } from '../data/site'
+import { profile, heroCommands, features } from '../data/site'
 
 interface Props {
   /** Appended as a live `ls ~/blog | wc -l` line. */
@@ -10,13 +10,18 @@ const { postCount = 0 } = Astro.props
 
 const commands = [
   ...heroCommands,
-  {
-    cmd: 'ls ~/blog | wc -l',
-    out:
-      postCount === 0
-        ? 'no posts yet — first one is on the way'
-        : `${postCount} post${postCount === 1 ? '' : 's'} — more on the way`,
-  },
+  // Rides along with the blog; drops out of the rotation while it is unpublished.
+  ...(features.blog
+    ? [
+        {
+          cmd: 'ls ~/blog | wc -l',
+          out:
+            postCount === 0
+              ? 'no posts yet — first one is on the way'
+              : `${postCount} post${postCount === 1 ? '' : 's'} — more on the way`,
+        },
+      ]
+    : []),
 ]
 
 const first = commands[0]!

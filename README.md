@@ -26,6 +26,32 @@ npm run check    # astro check (types + templates)
 
 Content edits almost always mean editing `src/data/site.ts` — the `.astro` files are layout only.
 
+## The blog is currently switched off
+
+There are no posts yet, so the blog is unpublished. Nothing was deleted — the content
+collection, the list page, the post page, the RSS route and `PostList.astro` are all intact.
+
+Two things turn it back on:
+
+1. `features.blog = true` in `src/data/site.ts` — restores the nav link, the hero link, the
+   footer RSS link, the two command-palette entries, the `<link rel="alternate">` feed tag,
+   the `#writing` section on the homepage and the `ls ~/blog | wc -l` line in the hero rotator.
+2. Drop the `_` prefix from `src/pages/_blog/` and `src/pages/_rss.xml.ts`. Astro ignores
+   anything under `src/pages/` that starts with `_`, which is what keeps `/blog` and
+   `/rss.xml` from being built at all rather than merely unlinked.
+
+The `#writing` section itself lives in `src/pages/index.astro` and was removed with the rest;
+re-add it between `#open-source` and `#education`:
+
+```astro
+<Section id="writing" label="writing" cmd="ls" args="-lt ~/blog">
+  <PostList posts={posts} empty="nothing published yet — first post is on the way." />
+  <p class="more" data-reveal><a href="/blog" class="dim">~/blog →</a></p>
+</Section>
+```
+
+…along with `{ id: 'writing', label: 'writing' }` in `sections[]`.
+
 ## Publishing a post
 
 Drop a Markdown file in `src/content/blog/`:

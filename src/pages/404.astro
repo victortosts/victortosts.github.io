@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro'
-import { profile } from '../data/site'
+import { profile, features } from '../data/site'
 ---
 
 <Base title={`404 — ${profile.name}`} description="Page not found.">
@@ -17,7 +17,7 @@ import { profile } from '../data/site'
     <p class="hint dim" data-reveal>exit status 404</p>
     <p class="links" data-reveal>
       <a href="/">[~/]</a>
-      <a href="/blog">[~/blog]</a>
+      {features.blog && <a href="/blog">[~/blog]</a>}
     </p>
   </div>
 </Base>

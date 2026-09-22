@@ -1,5 +1,5 @@
 ---
-import { sections } from '../data/site'
+import { sections, features } from '../data/site'
 
 interface Props {
   /** Home shows in-page anchors; other pages link back to the homepage sections. */
@@ -19,7 +19,7 @@ const prefix = variant === 'home' ? '' : '/'
 
       <div class="nav-links" id="nav-links">
         {sections.map((s) => <a href={`${prefix}#${s.id}`} class="nav-link">{s.label}</a>)}
-        <a href="/blog" class="nav-link">blog</a>
+        {features.blog && <a href="/blog" class="nav-link">blog</a>}
         <button class="btn" id="palette-btn" aria-haspopup="dialog" aria-label="Open command palette">[/]</button>
         <button class="btn" id="theme-btn" aria-label="Toggle color theme">[theme]</button>
       </div>

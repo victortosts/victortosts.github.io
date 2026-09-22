@@ -1,5 +1,5 @@
 ---
-import { links } from '../data/site'
+import { links, features } from '../data/site'
 
 const year = new Date().getFullYear()
 ---
@@ -11,7 +11,7 @@ const year = new Date().getFullYear()
       <a href={links.github} target="_blank" rel="noopener">github</a>
       <a href={links.linkedin} target="_blank" rel="noopener">linkedin</a>
       <a href={links.resume} target="_blank" rel="noopener nofollow" download>resume</a>
-      <a href={links.rss}>rss</a>
+      {features.blog && <a href={links.rss}>rss</a>}
     </span>
   </div>
 </footer>
