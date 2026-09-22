@@ -30,7 +30,7 @@ export const links = {
 } as const
 
 export const about = [
-  'I\u2019m a builder. What I enjoy most is taking something from a rough idea to a system people rely on: the services and queues underneath, the interface on top, and the many small judgement calls in between about what to keep simple and what to leave room for. Most of what I know came from shipping software that had to keep working at volume, with real money and real deadlines attached.',
+  'I\u2019m a builder. What I enjoy most is taking something from a rough idea to a system people rely on: the services and queues underneath, the interface on top, and the many small judgement calls in between about what to keep simple and what to leave room for. Most of what I know came from <span class="hl">10+ years</span> of shipping software that had to keep working at volume, with real money and real deadlines attached.',
 ] as const
 
 export type CareerEntry = {
