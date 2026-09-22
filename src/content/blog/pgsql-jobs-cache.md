@@ -1,30 +1,22 @@
 ---
-title: 'Why I finally built a page of my own'
-description: 'Ten years of backends, none of it written down anywhere I control. Starting here.'
+title: "You Probably Don't Need a Queue or Cache Yet"
+description: "When starting a new project, it's tempting to introduce Redis, RabbitMQ, SQS, or other infrastructure as soon as you need caching or background jobs. But if PostgreSQL is already your source of truth, you may not need them yet"
 date: 2026-09-22
-tags: ['meta', 'backend']
+tags: ['PostgreSQL', 'Async Jobs', 'Caching', 'Infra']
 draft: false
 ---
 
-I have been writing backends for about a decade and have almost nothing to show for it
-outside of a resume and some private repositories. Every system I am proud of lives behind
-a company VPN. This page is the fix: a place I own, where the interesting parts of the work
-can exist in public.
 
-## What I plan to write about
 
-Mostly the unglamorous middle of backend engineering — the part between "it works on my
-machine" and "it survived Black Friday":
+## You Probably Don't Need a Queue or Cache Yet
 
-- Event-driven systems that stay debuggable: queues, topics, retries, and the dead letters
-  nobody reads until it is too late.
-- Multi-channel messaging at volume — what actually breaks when email, SMS, WhatsApp and
-  chat all share one delivery pipeline.
-- Node.js and TypeScript in production: Fastify, schema validation at the edge, and why
-  I keep reaching for boring types.
-- Observability as a design constraint rather than an afterthought.
+If you're not serving static files, the first piece of infra your application needs is probably a database. After shipping a couple of features, you'll be considering adding a Redis instance for handling caching and async jobs and queues for async processing. I see this very often in early-staged projects, specially at the AI-era, when we can build things very quickly.
 
-## A small example
+Now your project architecture has 3-5 infra components before the product release and have a meaningful amount of users or traffic. More infra means costs, manageability and complexity. If you are using PostgreSQL, you can use your own database to address these requirements before you need something more robust. In this paper I show you how.
+
+
+
+## Caching with Postgres
 
 Most of my bugs over the years reduce to one thing: a boundary that accepted data it should
 have rejected. So validation lands at the edge, before anything downstream can believe it.

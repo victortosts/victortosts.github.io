@@ -40,8 +40,9 @@ Two things turn it back on:
    anything under `src/pages/` that starts with `_`, which is what keeps `/blog` and
    `/rss.xml` from being built at all rather than merely unlinked.
 
-The `#writing` section itself lives in `src/pages/index.astro` and was removed with the rest;
-re-add it between `#open-source` and `#education`:
+The `#writing` section itself lives in `src/pages/index.astro` and was removed with the rest.
+Re-add it after `#open-source`, along with the two imports it needs
+(`PostList` and `getPosts`) and the `const posts = (await getPosts()).slice(0, 3)` line:
 
 ```astro
 <Section id="writing" label="writing" cmd="ls" args="-lt ~/blog">
