@@ -10,6 +10,7 @@ permissions:
   pages: write
   id-token: write
 
+# Let a running deploy finish rather than cancelling it half way.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -20,6 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: withastro/action@v3
+        with:
+          # Astro 7 requires Node >=22.12; the action's default is older.
+          node-version: 22
+          package-manager: npm@latest
 
   deploy:
     needs: build
