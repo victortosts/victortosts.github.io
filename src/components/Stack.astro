@@ -5,7 +5,7 @@ import { stack } from '../data/site'
 <dl class="stack">
   {
     stack.map((group) => (
-      <div class="row">
+      <div class="row" data-reveal>
         <dt class="label">{group.label}</dt>
         <dd class="items">
           {group.items.map((item, i) => (

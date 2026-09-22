@@ -5,13 +5,46 @@ interface Props {
   host?: string
   cmd: string
   args?: string
+  /** Type the command out on reveal instead of printing it at once. */
+  typed?: boolean
+  /** Leave the cursor blinking after typing finishes. */
+  keepCursor?: boolean
 }
 
-const { host = profile.host, cmd, args } = Astro.props
+const { host = profile.host, cmd, args, typed = false, keepCursor = false } = Astro.props
+const text = args ? `${cmd} ${args}` : cmd
 ---
 
-<div class="prompt">
-  <span class="ps1">{profile.handle}@{host}:~$</span>
-  <span class="cmd">{cmd}</span>
-  {args && <span class="arg">{args}</span>}
-</div>
+{
+  typed ? (
+    <div class="prompt" data-keep-cursor={keepCursor ? '' : undefined}>
+      <span class="ps1">
+        {profile.handle}@{host}:~$
+      </span>
+      <span class="type" data-type>
+        <span class="type-ghost">{text}</span>
+        <span class="type-live" aria-hidden="true" />
+      </span>
+      <span class="cursor" aria-hidden="true" />
+    </div>
+  ) : (
+    <div class="prompt">
+      <span class="ps1">
+        {profile.handle}@{host}:~$
+      </span>
+      <span class="cmd">{cmd}</span>
+      {args && <span class="arg">{args}</span>}
+    </div>
+  )
+}
+
+<style>
+  .type {
+    color: var(--text);
+  }
+
+  /* The prompt and its cursor sit on one baseline even while the line is empty. */
+  .prompt {
+    min-height: 1.6em;
+  }
+</style>

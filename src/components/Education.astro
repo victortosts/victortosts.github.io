@@ -5,7 +5,7 @@ import { education, honors, languages } from '../data/site'
 <div class="edu">
   {
     education.map((e) => (
-      <div class="item">
+      <div class="item" data-reveal>
         <div class="item-hd">
           <h3 class="school">
             {e.school} <span class="short faint">({e.short})</span>
@@ -17,7 +17,7 @@ import { education, honors, languages } from '../data/site'
     ))
   }
 
-  <div class="sub">
+  <div class="sub" data-reveal>
     <h3 class="sub-hd">honors</h3>
     {
       honors.map((h) => (
@@ -40,7 +40,7 @@ import { education, honors, languages } from '../data/site'
     }
   </div>
 
-  <div class="sub">
+  <div class="sub" data-reveal>
     <h3 class="sub-hd">languages</h3>
     <p class="degree dim">
       {languages.map((l, i) => (

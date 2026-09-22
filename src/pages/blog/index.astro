@@ -9,17 +9,19 @@ const posts = await getPosts()
 ---
 
 <Base title={`blog — ${profile.name}`} description={`Notes on backend engineering by ${profile.name}.`}>
-  <Prompt cmd="ls" args="-lt ~/blog" />
+  <div data-seq data-seq-now>
+    <Prompt cmd="ls" args="-lt ~/blog" typed />
 
-  <header class="hd">
+    <header class="hd" data-reveal>
     <h1 class="sec-heading"><span class="hash">#</span><span class="label">blog</span></h1>
     <p class="dim intro">
       Notes on backends, event-driven systems, and whatever breaks in production this month.
       <a href={links.rss}>rss</a>
-    </p>
-  </header>
+      </p>
+    </header>
 
-  <PostList posts={posts} />
+    <PostList posts={posts} headingLevel={2} />
+  </div>
 
   <p class="back"><a href="/" class="dim">← ~/</a></p>
 </Base>
@@ -32,6 +34,11 @@ const posts = await getPosts()
   .intro {
     font-size: 0.8rem;
     margin-bottom: 2rem;
+  }
+
+  /* Inline in body copy, so color alone must not carry the link. */
+  .intro a {
+    border-bottom-color: color-mix(in srgb, var(--link) 45%, transparent);
   }
 
   .back {

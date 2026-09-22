@@ -1,15 +1,31 @@
 ---
+import Prompt from './Prompt.astro'
+
 interface Props {
   id: string
   label: string
+  /** Shown as a typed shell command between the heading and the content. */
+  cmd?: string
+  args?: string
 }
 
-const { id, label } = Astro.props
+const { id, label, cmd, args } = Astro.props
 ---
 
-<section id={id} aria-labelledby={`${id}-heading`}>
-  <h2 class="sec-heading" id={`${id}-heading`}>
+<section id={id} aria-labelledby={`${id}-heading`} data-seq>
+  <h2 class="sec-heading" id={`${id}-heading`} data-reveal>
     <span class="hash">#</span><span class="label">{label}</span>
   </h2>
-  <slot />
+
+  {cmd && <Prompt cmd={cmd} args={args} typed />}
+
+  <div class="body">
+    <slot />
+  </div>
 </section>
+
+<style>
+  .body {
+    margin-top: 0.9rem;
+  }
+</style>

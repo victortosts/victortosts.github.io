@@ -45,13 +45,25 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href
     <!-- Set the theme before first paint so the page never flashes the wrong one. -->
     <script is:inline>
       ;(() => {
+        const root = document.documentElement
+
         try {
           const stored = localStorage.getItem('theme')
           const theme =
             stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
-          document.documentElement.setAttribute('data-theme', theme)
+          root.setAttribute('data-theme', theme)
         } catch {
           /* private mode / blocked storage: keep the dark default */
+        }
+
+        // Opt into the type/reveal animations before first paint. Everything they
+        // hide is visible without this class, so reduced motion and a failed script
+        // both fall back to the fully rendered page.
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          root.classList.add('anim')
+          setTimeout(() => {
+            if (!root.dataset.animReady) root.classList.remove('anim')
+          }, 2500)
         }
       })()
     </script>
@@ -103,6 +115,91 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href
         top: 0.5rem;
       }
     </style>
+
+    <script>
+      // Sequenced terminal animation: types each `[data-type]` command, then fades
+      // in the `[data-reveal]` blocks that follow it, staggered. A sequence starts
+      // when its `[data-seq]` root scrolls into view, or immediately for `data-seq-now`.
+      const root = document.documentElement
+
+      if (root.classList.contains('anim')) {
+        root.dataset.animReady = '1'
+
+        const TYPE_MS = 22
+        const START_MS = 110
+        const STAGGER_MS = 45
+
+        const typeEl = (el: Element) =>
+          new Promise<void>((resolve) => {
+            const ghost = el.querySelector('.type-ghost')
+            const live = el.querySelector('.type-live')
+            const prompt = el.closest('.prompt')
+            const text = ghost?.textContent ?? ''
+
+            if (!live) {
+              resolve()
+              return
+            }
+
+            prompt?.classList.add('typing')
+            let i = 0
+
+            const tick = () => {
+              live.textContent = text.slice(0, ++i)
+              if (i < text.length) {
+                setTimeout(tick, TYPE_MS)
+              } else {
+                if (!prompt?.hasAttribute('data-keep-cursor')) prompt?.classList.remove('typing')
+                resolve()
+              }
+            }
+
+            setTimeout(tick, START_MS)
+          })
+
+        const reveal = (el: Element, delay: number) => {
+          ;(el as HTMLElement).style.setProperty('--d', `${delay}ms`)
+          el.classList.add('in')
+        }
+
+        const run = async (seq: HTMLElement) => {
+          if (seq.dataset.ran) return
+          seq.dataset.ran = '1'
+
+          let delay = 0
+          for (const el of seq.querySelectorAll('[data-type], [data-reveal]')) {
+            if (el.hasAttribute('data-type')) {
+              await typeEl(el)
+              delay = 0
+            } else {
+              reveal(el, delay)
+              delay += STAGGER_MS
+            }
+          }
+        }
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue
+              io.unobserve(entry.target)
+              run(entry.target as HTMLElement)
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.05 },
+        )
+
+        for (const seq of document.querySelectorAll<HTMLElement>('[data-seq]')) {
+          if (seq.hasAttribute('data-seq-now')) run(seq)
+          else io.observe(seq)
+        }
+
+        // Anything outside a sequence would otherwise stay hidden.
+        for (const el of document.querySelectorAll('[data-reveal]')) {
+          if (!el.closest('[data-seq]')) reveal(el, 0)
+        }
+      }
+    </script>
 
     <script is:inline>
       ;(() => {

@@ -4,14 +4,18 @@ import { profile } from '../data/site'
 ---
 
 <Base title={`404 — ${profile.name}`} description="Page not found.">
-  <div class="nf">
+  <div class="nf" data-seq data-seq-now>
     <div class="prompt">
       <span class="ps1">{profile.handle}@{profile.host}:~$</span>
-      <span class="cmd" id="attempted">cd</span>
+      <span class="type" data-type>
+        <span class="type-ghost" id="attempted">cd</span>
+        <span class="type-live" aria-hidden="true" />
+      </span>
+      <span class="cursor" aria-hidden="true" />
     </div>
-    <p class="msg">bash: <span id="path">that path</span>: No such file or directory</p>
-    <p class="hint dim">exit status 404</p>
-    <p class="links">
+    <p class="msg" data-reveal>bash: <span id="path">that path</span>: No such file or directory</p>
+    <p class="hint dim" data-reveal>exit status 404</p>
+    <p class="links" data-reveal>
       <a href="/">[~/]</a>
       <a href="/blog">[~/blog]</a>
     </p>
@@ -47,6 +51,7 @@ import { profile } from '../data/site'
 
 <script is:inline>
   ;(() => {
+    // Runs before the animation script reads the ghost text.
     const path = window.location.pathname
     const cmd = document.getElementById('attempted')
     const target = document.getElementById('path')

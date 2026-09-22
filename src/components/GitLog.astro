@@ -4,9 +4,9 @@ import Prompt from './Prompt.astro'
 ---
 
 <div class="gitlog">
-  <Prompt cmd="git" args="log --oneline career" />
+  <Prompt cmd="git" args="log --oneline career" typed />
 
-  <details class="log-details">
+  <details class="log-details" data-reveal>
     <summary class="btn">git log</summary>
     <div class="log-body">
       {

@@ -3,11 +3,11 @@ import { profile, links } from '../data/site'
 import Prompt from './Prompt.astro'
 ---
 
-<section id="home" class="hero">
-  <Prompt host="local" cmd="ssh" args={`${profile.handle}@${profile.host}`} />
-  <p class="connected faint">Connected to {profile.handle}@{profile.host}. Welcome.</p>
+<section id="home" class="hero" data-seq data-seq-now>
+  <Prompt host="local" cmd="ssh" args={`${profile.handle}@${profile.host}`} typed />
+  <p class="connected faint" data-reveal>Connected to {profile.handle}@{profile.host}. Welcome.</p>
 
-  <div class="hero-out">
+  <div class="hero-out" data-reveal>
     <h1 class="hero-name">{profile.name}</h1>
     <p class="hero-role">// {profile.role}</p>
     <p class="hero-loc dim">{profile.location}</p>
@@ -25,11 +25,8 @@ import Prompt from './Prompt.astro'
     </p>
   </div>
 
-  <div class="prompt typed-line">
-    <span class="ps1">{profile.handle}@{profile.host}:~$</span>
-    <span id="typed-cmd"></span><span class="cursor"></span>
-  </div>
-  <p id="typed-out" class="dim">{profile.tagline}</p>
+  <Prompt cmd="whoami" args="--verbose" typed keepCursor />
+  <p id="typed-out" class="dim" data-reveal>{profile.tagline}</p>
 </section>
 
 <style>
@@ -78,15 +75,10 @@ import Prompt from './Prompt.astro'
     color: var(--teal);
   }
 
-  .typed-line {
-    min-height: 1.6em;
-  }
-
   #typed-out {
     padding-left: 1.5rem;
     font-size: 0.8rem;
     margin-top: 0.2rem;
-    transition: opacity 0.2s ease;
   }
 
   @media (max-width: 30rem) {
@@ -95,36 +87,6 @@ import Prompt from './Prompt.astro'
     }
   }
 </style>
-
-<script is:inline>
-  ;(() => {
-    const cmdEl = document.getElementById('typed-cmd')
-    const outEl = document.getElementById('typed-out')
-    if (!cmdEl || !outEl) return
-
-    const command = 'whoami --verbose'
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    if (reduced) {
-      cmdEl.textContent = command
-      return
-    }
-
-    // The answer is already in the DOM, so its box is reserved and nothing shifts.
-    outEl.style.opacity = '0'
-
-    let i = 0
-    const type = () => {
-      cmdEl.textContent = command.slice(0, ++i)
-      if (i < command.length) {
-        setTimeout(type, 55)
-      } else {
-        setTimeout(() => (outEl.style.opacity = '1'), 320)
-      }
-    }
-    setTimeout(type, 500)
-  })()
-</script>
 
 <script is:inline>
   // Assemble the address only in the browser, so the markup never ships a plain mailto.

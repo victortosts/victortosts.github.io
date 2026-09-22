@@ -5,22 +5,25 @@ import { formatShort } from '../data/posts'
 interface Props {
   posts: Post[]
   empty?: string
+  /** 3 under a section heading on the homepage, 2 when the page heading is the h1. */
+  headingLevel?: 2 | 3
 }
 
-const { posts, empty = 'no posts yet.' } = Astro.props
+const { posts, empty = 'no posts yet.', headingLevel = 3 } = Astro.props
+const Heading = `h${headingLevel}` as 'h2' | 'h3'
 ---
 
 {
   posts.length === 0 ? (
-    <p class="empty faint">{empty}</p>
+    <p class="empty faint" data-reveal>{empty}</p>
   ) : (
     <ul class="posts">
       {posts.map((post) => (
-        <li class="post">
+        <li class="post" data-reveal>
           <div class="post-main">
-            <h3 class="post-title">
+            <Heading class="post-title">
               <a href={`/blog/${post.id}`}>{post.data.title}</a>
-            </h3>
+            </Heading>
             <p class="post-desc dim">{post.data.description}</p>
             {post.data.tags.length > 0 && (
               <p class="post-tags">
@@ -57,6 +60,10 @@ const { posts, empty = 'no posts yet.' } = Astro.props
   .post-title {
     font-size: 0.88rem;
     font-weight: 500;
+  }
+
+  .post-title a {
+    border-bottom-color: color-mix(in srgb, var(--link) 35%, transparent);
   }
 
   .post-desc {

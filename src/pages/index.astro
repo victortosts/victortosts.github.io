@@ -16,28 +16,28 @@ const posts = (await getPosts()).slice(0, 3)
 <Base title={`${profile.name} — ${profile.role}`} variant="home">
   <Hero />
 
-  <Section id="about" label="about">
+  <Section id="about" label="about" cmd="cat" args="about.md">
     <div class="about-text">
-      {about.map((p) => <p set:html={p} />)}
+      {about.map((p) => <p set:html={p} data-reveal />)}
     </div>
     <GitLog />
   </Section>
 
-  <Section id="stack" label="stack">
+  <Section id="stack" label="stack" cmd="ls" args="~/stack">
     <Stack />
   </Section>
 
-  <Section id="work" label="work experience">
+  <Section id="work" label="work experience" cmd="cat" args="~/work.md">
     <Experience />
   </Section>
 
-  <Section id="education" label="education">
+  <Section id="education" label="education" cmd="cat" args="~/edu.md">
     <Education />
   </Section>
 
-  <Section id="writing" label="writing">
+  <Section id="writing" label="writing" cmd="ls" args="-lt ~/blog">
     <PostList posts={posts} empty="nothing published yet — first post is on the way." />
-    <p class="more"><a href="/blog" class="dim">~/blog →</a></p>
+    <p class="more" data-reveal><a href="/blog" class="dim">~/blog →</a></p>
   </Section>
 </Base>
 
