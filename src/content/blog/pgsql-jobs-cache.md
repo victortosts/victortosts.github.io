@@ -119,7 +119,9 @@ SET
 WHERE id = $1;
 ```
 
-### When it starts to break down
+If a worker crashes while processing a job, the job can remain in processing indefinitely. A production implementation may need a timeout or lease mechanism to detect and retry stale jobs.
+
+### When this stops making sense
 
 As this article proposes, this approach is mainly intended for early-stage projects where you already have PostgreSQL and want to avoid adding new infrastructure before the product is validated and real usage justifies it. As the project grows, however, this approach comes with some limitations:
 
@@ -145,8 +147,7 @@ OK, show me the code:
 CREATE UNLOGGED TABLE cache (
   key TEXT PRIMARY KEY,
   data JSONB NOT NULL,
-  expires_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ
+  expires_at TIMESTAMPTZ
 );
 ```
 
@@ -200,7 +201,7 @@ DELETE FROM cache
 WHERE key = $1;
 ```
 
-### When it starts to break down
+### When this stops making sense
 
 As with the queue approach, this caching strategy is mainly intended for early-stage projects where PostgreSQL is already part of the infrastructure and adding another service isn't justified yet.
 
