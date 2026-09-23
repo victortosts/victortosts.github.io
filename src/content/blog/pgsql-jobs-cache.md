@@ -119,7 +119,7 @@ SET
 WHERE id = $1;
 ```
 
-### Important Considerations:
+### When it starts to break down
 
 As this article proposes, this approach is mainly intended for early-stage projects where you already have PostgreSQL and want to avoid adding new infrastructure before the product is validated and real usage justifies it. As the project grows, however, this approach comes with some limitations:
 
@@ -150,7 +150,7 @@ CREATE UNLOGGED TABLE cache (
 );
 ```
 
-Notice that we can use a JSONB column instead of storing individual fields and reconstructing the response. This allows us to store the data already prepared in the format the application needs.
+Notice that we can use a `JSONB` column instead of storing individual fields and reconstructing the response. This allows us to store the data already prepared in the format the application needs.
 
 Populate the cache with an `INSERT`:
 
@@ -183,7 +183,10 @@ There are a few simple ways to manage the cache. If the underlying data changes,
 -- Update the cached value
 UPDATE cache
 SET
-  data = '{"name": "Victor", "projects": 13}'::jsonb,
+  data = '{
+    "baz": "foo",
+    "fulano": "bar"
+  }',
   expires_at = NOW() + INTERVAL '1 hour'
 WHERE key = $1;
 
@@ -196,6 +199,18 @@ WHERE key = $1;
 DELETE FROM cache
 WHERE key = $1;
 ```
+
+### When it starts to break down
+
+As with the queue approach, this caching strategy is mainly intended for early-stage projects where PostgreSQL is already part of the infrastructure and adding another service isn't justified yet.
+
+As the project grows, however, there are some limitations:
+
+- **Cache traffic can affect application queries.** Since the cache uses the same PostgreSQL instance as the application's main data, cache reads and writes compete for the same database resources. At some point, the additional workload can start affecting the performance of regular application queries.
+
+- **The cache may need to scale independently.** As cache traffic grows, you may want to scale the cache separately from the database. With PostgreSQL, both workloads share the same infrastructure, while a dedicated cache can scale independently.
+
+- **Cache management can become more complex.** Simple expiration and invalidation may be enough initially, but more advanced requirements such as eviction policies, distributed caching, or more sophisticated invalidation strategies can make a dedicated caching system more appropriate.
 
 ## References
 
