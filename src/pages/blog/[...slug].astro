@@ -193,8 +193,26 @@ const { Content } = await render(post)
   }
 
   .prose img {
+    display: block;
+    width: 100%;
+    height: auto;
     border: 1px solid var(--border);
     border-radius: 4px;
+    /* Diagrams are usually drawn on white; the card keeps them legible in the
+       dark theme instead of dropping a bright slab into the page. */
+    background: #fff;
+    padding: 0.75rem;
+  }
+
+  /* An italic line directly under an image reads as its caption. */
+  .prose img + em,
+  .prose p > img + em {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.72rem;
+    font-style: normal;
+    color: var(--faint);
+    text-align: center;
   }
 
   .prose table {

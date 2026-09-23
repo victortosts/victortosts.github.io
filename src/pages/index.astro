@@ -7,12 +7,17 @@ import Stack from '../components/Stack.astro'
 import Experience from '../components/Experience.astro'
 import Education from '../components/Education.astro'
 import OpenSource from '../components/OpenSource.astro'
-import { about, profile } from '../data/site'
+import PostList from '../components/PostList.astro'
+import { about, profile, features } from '../data/site'
+import { getPosts } from '../data/posts'
+
+const allPosts = features.blog ? await getPosts() : []
+const posts = allPosts.slice(0, 3)
 
 ---
 
 <Base title={profile.name} variant="home">
-  <Hero />
+  <Hero postCount={allPosts.length} />
 
   <Section id="about" label="about" cmd="cat" args="about.md">
     <div class="about-text">
@@ -37,9 +42,25 @@ import { about, profile } from '../data/site'
   >
     <OpenSource />
   </Section>
+
+  {
+    features.blog && (
+      <Section id="writing" label="writing" cmd="ls" args="-lt ~/blog">
+        <PostList posts={posts} empty="nothing published yet — first post is on the way." />
+        <p class="more" data-reveal>
+          <a href="/blog" class="dim">~/blog →</a>
+        </p>
+      </Section>
+    )
+  }
 </Base>
 
 <style>
+  .more {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+  }
+
   .about-text p {
     font-size: 0.85rem;
     color: var(--dim);

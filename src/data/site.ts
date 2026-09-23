@@ -19,7 +19,7 @@ export const profile = {
  * read. To bring it back: flip `blog` to true and drop the `_` prefix from
  * `src/pages/_blog/` and `src/pages/_rss.xml.ts`.
  */
-export const features = { blog: false } as const
+export const features = { blog: true } as const
 
 export const links = {
   github: 'https://github.com/victortosts',
@@ -292,10 +292,14 @@ export const languages = [
 ] as const
 
 /** Nav entries double as command palette targets. */
-export const sections = [
+export type NavSection = { id: string; label: string }
+
+/** Drives the nav links and the command palette, in this order. */
+export const sections: NavSection[] = [
   { id: 'about', label: 'about' },
   { id: 'education', label: 'education' },
   { id: 'work', label: 'work' },
   { id: 'stack', label: 'stack' },
   { id: 'open-source', label: 'open source' },
-] as const
+  ...(features.blog ? [{ id: 'writing', label: 'writing' }] : []),
+]
