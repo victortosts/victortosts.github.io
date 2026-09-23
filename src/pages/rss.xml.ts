@@ -10,6 +10,8 @@ export const GET: APIRoute = async (context) => {
     title: `${profile.name} — blog`,
     description: `Notes on backend engineering by ${profile.name}.`,
     site: context.site!,
+    // Applied by browsers only; feed readers ignore it and parse the RSS.
+    stylesheet: '/rss-styles.xsl',
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.description,
