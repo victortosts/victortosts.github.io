@@ -1,5 +1,5 @@
 ---
-import { expertise, alsoKnown } from '../data/site'
+import { expertise } from '../data/site'
 ---
 
 <dl class="stack">
@@ -24,19 +24,6 @@ import { expertise, alsoKnown } from '../data/site'
       </div>
     ))
   }
-
-  <div class="row also" data-reveal>
-    <dt class="hd">
-      <span class="area">also</span>
-    </dt>
-    <dd class="tools">
-      <ul>
-        {alsoKnown.map((tool) => (
-          <li>{tool}</li>
-        ))}
-      </ul>
-    </dd>
-  </div>
 </dl>
 
 <style>
@@ -98,14 +85,5 @@ import { expertise, alsoKnown } from '../data/site'
     border: 1px solid var(--border);
     border-radius: 3px;
     padding: 0.05rem 0.45rem;
-  }
-
-  .also {
-    padding-top: 0.9rem;
-    border-top: 1px dashed var(--border);
-  }
-
-  .also .tools {
-    margin-top: 0.35rem;
   }
 </style>

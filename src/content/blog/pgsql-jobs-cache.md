@@ -134,3 +134,6 @@ As this article proposes, this approach is mainly intended for early-stage proje
 ... To be Written... In Progress
 
 ## References
+
+- [PostgreSQL Feature Matrix — SKIP LOCKED clause](https://www.postgresql.org/about/featurematrix/detail/skip-locked-clause/)
+- [Neon — Building a Queue System with PostgreSQL](https://neon.com/guides/queue-system)

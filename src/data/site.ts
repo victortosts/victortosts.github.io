@@ -228,8 +228,6 @@ export const expertise: Expertise[] = [
   },
 ]
 
-export const alsoKnown = ['Python', 'Puppeteer', 'LLMs', 'NLU', 'microservices', 'WebSockets'] as const
-
 export const openSource = [
   {
     repo: 'fastify/fastify',
