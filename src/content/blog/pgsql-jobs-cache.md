@@ -131,9 +131,75 @@ As this article proposes, this approach is mainly intended for early-stage proje
 
 ## Caching with Postgres
 
-... To be Written... In Progress
+Another common requirement is caching data that is frequently requested but expensive to compute. The usual approach is to store the result in a dedicated cache, such as Redis, using a unique key and an expiration or invalidation strategy.
+
+At first, using the database as a cache might sound contradictory. The whole point of a cache is to avoid hitting the database in the first place. But if PostgreSQL is already part of your infrastructure, there are cases where using it as a cache can still make sense. The idea is simple: we can use a separate table to store expensive-to-compute data in the format the application needs, avoiding expensive queries and transformations on every request. PostgreSQL provides a feature that is particularly interesting for this use case: `UNLOGGED` tables.
+
+These tables have one important difference from regular tables: their changes are not written to the write-ahead log (WAL). Consequently, write operations have less overhead and can require less I/O. The trade-off is durability. If PostgreSQL crashes or shuts down unexpectedly, an unlogged table may be automatically truncated.
+
+That's exactly what we want for cache data. The original data still exists in the regular tables, so if the cache is lost, the application can simply rebuild it.
+
+OK, show me the code:
+
+```sql
+CREATE UNLOGGED TABLE cache (
+  key TEXT PRIMARY KEY,
+  data JSONB NOT NULL,
+  expires_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ
+);
+```
+
+Notice that we can use a JSONB column instead of storing individual fields and reconstructing the response. This allows us to store the data already prepared in the format the application needs.
+
+Populate the cache with an `INSERT`:
+
+```sql
+INSERT INTO cache (key, data, expires_at)
+VALUES (
+  $1,
+  '{
+    "foo": "bar",
+    "baz": "fulano"
+  }',
+  NOW() + INTERVAL '1 hour'
+);
+```
+
+In a real application, the data value would usually be generated from the expensive query that we want to avoid running on every request.
+
+Then you can fetch it with a simple lookup:
+
+```sql
+SELECT data
+FROM cache
+WHERE key = $1
+  AND expires_at > NOW();
+```
+
+There are a few simple ways to manage the cache. If the underlying data changes, we can update the cached value directly, invalidate it by updating its expiration, or delete the entry entirely.
+
+```sql
+-- Update the cached value
+UPDATE cache
+SET
+  data = '{"name": "Victor", "projects": 13}'::jsonb,
+  expires_at = NOW() + INTERVAL '1 hour'
+WHERE key = $1;
+
+-- Invalidate by expiration
+UPDATE cache
+SET expires_at = NOW()
+WHERE key = $1;
+
+-- Or delete the cached value
+DELETE FROM cache
+WHERE key = $1;
+```
 
 ## References
 
 - [PostgreSQL Feature Matrix — SKIP LOCKED clause](https://www.postgresql.org/about/featurematrix/detail/skip-locked-clause/)
 - [Neon — Building a Queue System with PostgreSQL](https://neon.com/guides/queue-system)
+- [PostgreSQL Feature Matrix — UNLOGGED tables](https://www.postgresql.org/about/featurematrix/detail/unlogged-tables/)
+- [PostgreSQL — UNLOGGED Tables](https://medium.com/postgresql-blogs/unlogged-tables-in-postgres-02aed2c747d7)
